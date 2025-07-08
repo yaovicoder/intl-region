@@ -1,0 +1,41 @@
+# Dependencies
+/vendor/
+composer.lock
+
+# PHPUnit
+.phpunit.cache/
+test-results.xml
+phpunit.xml.dist.bak
+
+# IDE & Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+
+# Logs & Temporary Files
+*.log
+/tmp/
+/temp/
+
+# Environment Files
+.env
+.env.local
+.env.*.local
+
+# Build Artifacts
+/build/
+/dist/
+
+# Coverage Reports
+/coverage/
+*.cov
+
+# Backup Files
+*.bak
+*.backup 
