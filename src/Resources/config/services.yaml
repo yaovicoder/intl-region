@@ -1,0 +1,23 @@
+services:
+    # Default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # Makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    Ydee\IntlRegion\:
+        resource: '../'
+        exclude:
+            - '../DependencyInjection/'
+            - '../Entity/'
+            - '../Kernel.php'
+
+    # Explicitly register the RegionProvider service
+    ydee_intl_region.region_provider:
+        class: Ydee\IntlRegion\RegionProvider
+        arguments:
+            $defaultLocale: '%ydee_intl_region.default_locale%'
+        public: true
+        tags:
+            - { name: 'container.service_subscriber' } 

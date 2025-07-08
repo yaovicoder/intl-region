@@ -17,39 +17,53 @@ use Ydee\IntlRegion\Mapping\SubregionMapping;
 class RegionProvider
 {
     /**
+     * Default locale for country names.
+     */
+    private string $defaultLocale;
+
+    /**
+     * Constructor.
+     * 
+     * @param string $defaultLocale Default locale for country names
+     */
+    public function __construct(string $defaultLocale = 'en')
+    {
+        $this->defaultLocale = $defaultLocale;
+    }
+    /**
      * Get all countries for a given continent.
      * 
      * @param string $continentCode UN M49 continent code
-     * @param string|null $locale Locale for country names (default: 'en')
+     * @param string|null $locale Locale for country names (default: uses configured default)
      * @return array<string, string> Array of country codes mapped to localized names
      * @throws \InvalidArgumentException If continent code is invalid
      */
-    public function getCountriesByContinent(string $continentCode, ?string $locale = 'en'): array
+    public function getCountriesByContinent(string $continentCode, ?string $locale = null): array
     {
         if (!ContinentMapping::hasContinentCode($continentCode)) {
             throw new \InvalidArgumentException(sprintf('Invalid continent code: %s', $continentCode));
         }
 
         $countryCodes = ContinentMapping::getCountriesByContinent($continentCode);
-        return $this->getLocalizedCountryNames($countryCodes, $locale);
+        return $this->getLocalizedCountryNames($countryCodes, $locale ?? $this->defaultLocale);
     }
 
     /**
      * Get all countries for a given subregion.
      * 
      * @param string $subregionCode UN M49 subregion code
-     * @param string|null $locale Locale for country names (default: 'en')
+     * @param string|null $locale Locale for country names (default: uses configured default)
      * @return array<string, string> Array of country codes mapped to localized names
      * @throws \InvalidArgumentException If subregion code is invalid
      */
-    public function getCountriesBySubregion(string $subregionCode, ?string $locale = 'en'): array
+    public function getCountriesBySubregion(string $subregionCode, ?string $locale = null): array
     {
         if (!SubregionMapping::hasSubregionCode($subregionCode)) {
             throw new \InvalidArgumentException(sprintf('Invalid subregion code: %s', $subregionCode));
         }
 
         $countryCodes = SubregionMapping::getCountriesBySubregion($subregionCode);
-        return $this->getLocalizedCountryNames($countryCodes, $locale);
+        return $this->getLocalizedCountryNames($countryCodes, $locale ?? $this->defaultLocale);
     }
 
     /**
@@ -108,12 +122,11 @@ class RegionProvider
      * Get localized country names for given country codes.
      * 
      * @param array<string> $countryCodes Array of ISO 3166-1 alpha-2 country codes
-     * @param string|null $locale Locale for country names (default: 'en')
+     * @param string $locale Locale for country names
      * @return array<string, string> Array of country codes mapped to localized names
      */
-    private function getLocalizedCountryNames(array $countryCodes, ?string $locale = 'en'): array
+    private function getLocalizedCountryNames(array $countryCodes, string $locale): array
     {
-        $locale = $locale ?? 'en';
         $result = [];
 
         foreach ($countryCodes as $countryCode) {
@@ -166,10 +179,10 @@ class RegionProvider
      * Get continent information including name and available countries.
      * 
      * @param string $continentCode UN M49 continent code
-     * @param string|null $locale Locale for country names (default: 'en')
+     * @param string|null $locale Locale for country names (default: uses configured default)
      * @return array{code: string, name: string, countries: array<string, string>}|null Continent information or null if not found
      */
-    public function getContinentInfo(string $continentCode, ?string $locale = 'en'): ?array
+    public function getContinentInfo(string $continentCode, ?string $locale = null): ?array
     {
         if (!ContinentMapping::hasContinentCode($continentCode)) {
             return null;
@@ -186,7 +199,7 @@ class RegionProvider
         return [
             'code' => $continentCode,
             'name' => $continentNames[$continentCode] ?? $continentCode,
-            'countries' => $this->getCountriesByContinent($continentCode, $locale),
+            'countries' => $this->getCountriesByContinent($continentCode, $locale ?? $this->defaultLocale),
         ];
     }
 
@@ -194,10 +207,10 @@ class RegionProvider
      * Get subregion information including name and available countries.
      * 
      * @param string $subregionCode UN M49 subregion code
-     * @param string|null $locale Locale for country names (default: 'en')
+     * @param string|null $locale Locale for country names (default: uses configured default)
      * @return array{code: string, name: string, countries: array<string, string>}|null Subregion information or null if not found
      */
-    public function getSubregionInfo(string $subregionCode, ?string $locale = 'en'): ?array
+    public function getSubregionInfo(string $subregionCode, ?string $locale = null): ?array
     {
         if (!SubregionMapping::hasSubregionCode($subregionCode)) {
             return null;
@@ -231,7 +244,7 @@ class RegionProvider
         return [
             'code' => $subregionCode,
             'name' => $subregionNames[$subregionCode] ?? $subregionCode,
-            'countries' => $this->getCountriesBySubregion($subregionCode, $locale),
+            'countries' => $this->getCountriesBySubregion($subregionCode, $locale ?? $this->defaultLocale),
         ];
     }
 } 

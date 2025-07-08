@@ -8,7 +8,7 @@ Filter localized country lists by continent or subregion with zero manual mappin
 ## 📦 Package
 
 **Repository:** [`yaovicoder/intl-region`](https://github.com/yaovicoder/intl-region)  
-**Namespace:** `Ydee\Intl\Region`  
+**Namespace:** `Ydee\IntlRegion`  
 **License:** MIT
 
 ---
@@ -40,13 +40,17 @@ No more manual lists — no more errors.
 ## 🧩 Quick Example
 
 ```php
-use Ydee\Intl\Region\RegionProvider;
+use Ydee\IntlRegion\RegionProvider;
 
 $provider = new RegionProvider();
 
-$countries = $provider->getCountriesForContinent('EU', 'fr');
+// Get all African countries
+$africanCountries = $provider->getCountriesByContinent('002', 'fr');
 
-print_r($countries);
+// Get Eastern African countries
+$easternAfricanCountries = $provider->getCountriesBySubregion('014', 'en');
+
+print_r($africanCountries);
 ```
 
 ---
@@ -61,7 +65,11 @@ intl_region:
 
 CLI usage:
 ```bash
-php bin/console intl-region:list EU --locale=fr
+# List all African countries
+php bin/console intl-region:list continent 002 --locale=fr
+
+# List Eastern African countries
+php bin/console intl-region:list subregion 014 --format=json
 ```
 
 ---
