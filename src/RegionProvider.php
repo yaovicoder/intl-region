@@ -115,7 +115,9 @@ class RegionProvider
      */
     public function getAvailableCountryCodes(): array
     {
-        return ContinentMapping::getAvailableCountryCodes();
+        $continentCountries = ContinentMapping::getAvailableCountryCodes();
+        $subregionCountries = SubregionMapping::getAvailableCountryCodes();
+        return array_unique(array_merge($continentCountries, $subregionCountries));
     }
 
     /**
