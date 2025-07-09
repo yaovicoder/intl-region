@@ -18,6 +18,4 @@ services:
         class: Ydee\IntlRegion\RegionProvider
         arguments:
             $defaultLocale: '%ydee_intl_region.default_locale%'
-        public: true
-        tags:
-            - { name: 'container.service_subscriber' } 
+        public: true 
