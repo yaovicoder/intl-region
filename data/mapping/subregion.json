@@ -4,7 +4,7 @@
         "version": "2021",
         "generated": "2025-01-27",
         "description": "ISO 3166-1 alpha-2 country codes mapped to UN M49 subregion codes",
-        "last_updated": "2025-07-09 04:28:03",
+        "last_updated": "2025-07-09 04:53:22",
         "countries_count": 249
     },
     "names": {
@@ -281,6 +281,7 @@
         "NU": "061",
         "PN": "061",
         "TK": "061",
-        "WF": "061"
+        "WF": "061",
+        "AQ": ""
     }
 }

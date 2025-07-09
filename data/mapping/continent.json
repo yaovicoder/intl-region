@@ -4,7 +4,7 @@
         "version": "2021",
         "generated": "2025-01-27",
         "description": "ISO 3166-1 alpha-2 country codes mapped to UN M49 continent codes",
-        "last_updated": "2025-07-09 04:28:03",
+        "last_updated": "2025-07-09 04:53:22",
         "countries_count": 250
     },
     "names": {
@@ -238,7 +238,6 @@
         "BQ": "019",
         "SX": "019",
         "BM": "019",
-    
         "TM": "142",
         "BD": "142",
         "BT": "142",
@@ -264,6 +263,7 @@
         "NU": "009",
         "PN": "009",
         "TK": "009",
-        "WF": "009"
+        "WF": "009",
+        "AQ": ""
     }
 }
