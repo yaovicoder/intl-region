@@ -51,12 +51,14 @@ $frenchCountries = $provider->getCountriesByContinent('002', 'fr');
 - `015` - Northern Africa
 - `018` - Southern Africa
 - `011` - Western Africa
+- `202` - Sub-Saharan Africa
 
 #### Americas
 - `005` - South America
 - `013` - Central America
 - `021` - Northern America
 - `029` - Caribbean
+- `419` - Latin America and the Caribbean
 
 #### Asia
 - `030` - Eastern Asia
@@ -76,6 +78,92 @@ $frenchCountries = $provider->getCountriesByContinent('002', 'fr');
 - `054` - Melanesia
 - `057` - Micronesia
 - `061` - Polynesia
+
+---
+
+## 📊 Data Management
+
+### JSON-based Mapping System
+
+The package uses JSON files to store continent and subregion mappings:
+
+- `data/mapping/continent.json` - Maps ISO 3166-1 alpha-2 country codes to UN M49 continent codes
+- `data/mapping/subregion.json` - Maps ISO 3166-1 alpha-2 country codes to UN M49 subregion codes
+
+#### JSON File Structure
+
+```json
+{
+  "metadata": {
+    "source": "UN M49 Standard Country or Area Codes for Statistical Use",
+    "version": "2021",
+    "generated": "2025-01-27",
+    "last_updated": "2025-01-27 15:30:00",
+    "countries_count": 247,
+    "description": "ISO 3166-1 alpha-2 country codes mapped to UN M49 continent codes"
+  },
+  "names": {
+    "002": "Africa",
+    "019": "Americas",
+    "142": "Asia",
+    "150": "Europe",
+    "009": "Oceania"
+  },
+  "mapping": {
+    "DZ": "002",
+    "AO": "002",
+    "US": "019",
+    "CN": "142",
+    "FR": "150",
+    "AU": "009"
+  }
+}
+```
+
+### Updating Country Mappings
+
+The package includes scripts to keep mappings up to date with official UN data:
+
+```bash
+# 1. Download latest UN M49 data
+php scripts/download-un-m49-data.php
+
+# 2. Update local mappings with missing countries
+php scripts/update-mappings.php
+
+# 3. Validate completeness
+vendor/bin/phpunit tests/UNM49DataValidationTest.php
+
+# 4. Run full test suite
+vendor/bin/phpunit
+```
+
+#### What the Scripts Do
+
+**Download Script (`download-un-m49-data.php`):**
+- Fetches data from the official UN M49 website
+- Saves raw HTML to `tests/_output/un-m49-overview.html`
+- Extracts and saves structured data to `tests/_output/un-m49-data.json`
+- Provides a summary of extracted data
+
+**Update Script (`update-mappings.php`):**
+- Compares UN data with local JSON mappings
+- Identifies missing countries
+- Automatically adds missing countries to both mapping files
+- Updates metadata with timestamp and country count
+
+**Validation Test (`UNM49DataValidationTest.php`):**
+- Loads downloaded UN data
+- Compares with local mappings
+- Reports any missing countries or regions
+- Ensures data accuracy and completeness
+
+### Data Sources
+
+- **UN M49 Standard**: Official UN geographic codes from [UN M49 Overview](https://unstats.un.org/unsd/methodology/m49/overview/)
+- **Validation**: Automated comparison with UN website data
+- **Coverage**: All 247+ UN-recognized countries and territories
+- **Updates**: Scripts ensure mappings stay current with official UN data
 
 ---
 

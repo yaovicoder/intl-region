@@ -131,7 +131,7 @@ class RegionProviderTest extends TestCase
         $this->assertContains('142', $codes);
         $this->assertContains('150', $codes);
         $this->assertContains('009', $codes);
-        $this->assertCount(5, $codes);
+        $this->assertCount(6, $codes); // Now includes Antarctica
     }
 
     public function testGetAvailableSubregionCodes(): void
