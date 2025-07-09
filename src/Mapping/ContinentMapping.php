@@ -156,6 +156,7 @@ final class ContinentMapping
         'SY' => '142', // Syria
         'TW' => '142', // Taiwan
         'TJ' => '142', // Tajikistan
+        'TM' => '142', // Turkmenistan
         'TH' => '142', // Thailand
         'TL' => '142', // Timor-Leste
         'AE' => '142', // United Arab Emirates
@@ -260,7 +261,11 @@ final class ContinentMapping
      */
     public static function getAvailableContinentCodes(): array
     {
-        return array_unique(array_values(self::$mapping));
+        static $codes = null;
+        if ($codes === null) {
+            $codes = array_unique(array_values(self::$mapping));
+        }
+        return $codes;
     }
 
     /**
