@@ -95,8 +95,8 @@ class SubregionMappingTest extends TestCase
     {
         // Test that all countries in the mapping have valid subregion codes
         $validSubregionCodes = [
-            '014', '017', '015', '018', '011', // Africa
-            '005', '013', '021', '029', // Americas
+            '014', '017', '015', '018', '011', '202', // Africa
+            '005', '013', '021', '029', '419', // Americas
             '030', '034', '035', '143', '145', // Asia
             '151', '154', '039', '155', // Europe
             '053', '054', '057', '061', // Oceania

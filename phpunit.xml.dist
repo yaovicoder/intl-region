@@ -11,23 +11,6 @@
         </testsuite>
     </testsuites>
 
-    <source>
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
-    </source>
-
-    <coverage>
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
-        <exclude>
-            <directory>src/DependencyInjection</directory>
-            <directory>src/Bundle</directory>
-            <directory>src/Command</directory>
-        </exclude>
-    </coverage>
-
     <php>
         <env name="APP_ENV" value="test"/>
     </php>

@@ -115,7 +115,9 @@ class RegionProvider
      */
     public function getAvailableCountryCodes(): array
     {
-        return ContinentMapping::getAvailableCountryCodes();
+        $continentCountries = ContinentMapping::getAvailableCountryCodes();
+        $subregionCountries = SubregionMapping::getAvailableCountryCodes();
+        return array_unique(array_merge($continentCountries, $subregionCountries));
     }
 
     /**
@@ -150,7 +152,7 @@ class RegionProvider
      */
     public function hasCountryCode(string $countryCode): bool
     {
-        return ContinentMapping::hasCountryCode($countryCode);
+        return ContinentMapping::hasCountryCode($countryCode) || SubregionMapping::hasCountryCode($countryCode);
     }
 
     /**
@@ -188,17 +190,9 @@ class RegionProvider
             return null;
         }
 
-        $continentNames = [
-            '002' => 'Africa',
-            '019' => 'Americas',
-            '142' => 'Asia',
-            '150' => 'Europe',
-            '009' => 'Oceania',
-        ];
-
         return [
             'code' => $continentCode,
-            'name' => $continentNames[$continentCode] ?? $continentCode,
+            'name' => ContinentMapping::getName($continentCode) ?? $continentCode,
             'countries' => $this->getCountriesByContinent($continentCode, $locale ?? $this->defaultLocale),
         ];
     }
@@ -216,34 +210,9 @@ class RegionProvider
             return null;
         }
 
-        $subregionNames = [
-            '014' => 'Eastern Africa',
-            '017' => 'Middle Africa',
-            '015' => 'Northern Africa',
-            '018' => 'Southern Africa',
-            '011' => 'Western Africa',
-            '005' => 'South America',
-            '013' => 'Central America',
-            '021' => 'Northern America',
-            '029' => 'Caribbean',
-            '030' => 'Eastern Asia',
-            '034' => 'Southern Asia',
-            '035' => 'South-Eastern Asia',
-            '143' => 'Central Asia',
-            '145' => 'Western Asia',
-            '151' => 'Eastern Europe',
-            '154' => 'Northern Europe',
-            '039' => 'Southern Europe',
-            '155' => 'Western Europe',
-            '053' => 'Australia and New Zealand',
-            '054' => 'Melanesia',
-            '057' => 'Micronesia',
-            '061' => 'Polynesia',
-        ];
-
         return [
             'code' => $subregionCode,
-            'name' => $subregionNames[$subregionCode] ?? $subregionCode,
+            'name' => SubregionMapping::getName($subregionCode) ?? $subregionCode,
             'countries' => $this->getCountriesBySubregion($subregionCode, $locale ?? $this->defaultLocale),
         ];
     }

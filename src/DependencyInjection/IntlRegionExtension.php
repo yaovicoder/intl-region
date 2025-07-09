@@ -29,11 +29,11 @@ class IntlRegionExtension extends Extension
         $loader->load('services.yaml');
 
         // Set the default locale parameter
-        $container->setParameter('ydee_intl_region.default_locale', $config['default_locale'] ?? 'en');
+        $container->setParameter('ydee_intl_region.default_locale', $config['default_locale']);
 
         // Configure the RegionProvider service with the default locale
         $regionProviderDefinition = $container->getDefinition('ydee_intl_region.region_provider');
-        $regionProviderDefinition->setArgument('$defaultLocale', $config['default_locale'] ?? 'en');
+        $regionProviderDefinition->setArgument('$defaultLocale', $config['default_locale']);
     }
 
     /**
