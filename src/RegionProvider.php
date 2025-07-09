@@ -150,7 +150,7 @@ class RegionProvider
      */
     public function hasCountryCode(string $countryCode): bool
     {
-        return ContinentMapping::hasCountryCode($countryCode);
+        return ContinentMapping::hasCountryCode($countryCode) || SubregionMapping::hasCountryCode($countryCode);
     }
 
     /**

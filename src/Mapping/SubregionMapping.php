@@ -311,7 +311,11 @@ final class SubregionMapping
      */
     public static function getAvailableSubregionCodes(): array
     {
-        return array_unique(array_values(self::$mapping));
+        static $codes = null;
+        if ($codes === null) {
+            $codes = array_unique(array_values(self::$mapping));
+        }
+        return $codes;
     }
 
     /**
