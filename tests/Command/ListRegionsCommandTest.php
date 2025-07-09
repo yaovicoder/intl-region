@@ -73,7 +73,7 @@ class ListRegionsCommandTest extends TestCase
         $output = $this->commandTester->getDisplay();
         
         $this->assertStringContainsString('Africa: 002', $output);
-        $this->assertStringContainsString('DZ', $output);
+        $this->assertStringContainsString('Algérie', $output); // Check for French name
         $this->assertEquals(0, $this->commandTester->getStatusCode());
     }
 
@@ -160,7 +160,7 @@ class ListRegionsCommandTest extends TestCase
         // Test help by getting the command help text
         $command = $this->application->find('intl-region:list');
         $helpText = $command->getHelp();
-        $helpText = trim(preg_replace('/\s+/', ' ', $helpText));
+        $helpText = implode("\n", array_map('trim', explode("\n", $helpText)));
         // Only check for the presence of key options and examples
         $this->assertStringContainsString('continent 002', $helpText);
         $this->assertStringContainsString('subregion 014', $helpText);

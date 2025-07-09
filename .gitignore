@@ -1,41 +1,40 @@
 # Dependencies
 /vendor/
-composer.lock
+/node_modules/
 
-# PHPUnit
-.phpunit.cache/
-test-results.xml
-phpunit.xml.dist.bak
+# Environment files
+.env
+.env.local
+.env.test
 
-# IDE & Editors
-.idea/
+# IDE files
 .vscode/
+.idea/
 *.swp
 *.swo
-*~
 
-# OS Generated Files
+# OS files
 .DS_Store
 Thumbs.db
 
-# Logs & Temporary Files
+# Logs
 *.log
-/tmp/
-/temp/
+/logs/
 
-# Environment Files
-.env
-.env.local
-.env.*.local
+# Cache
+.cache/
+.phpunit.cache/
 
-# Build Artifacts
+# Build artifacts
 /build/
 /dist/
 
-# Coverage Reports
+# Test coverage
 /coverage/
-*.cov
 
-# Backup Files
+# Backup files
 *.bak
 *.backup 
+
+# Test output files (downloaded data)
+tests/_output/ 
