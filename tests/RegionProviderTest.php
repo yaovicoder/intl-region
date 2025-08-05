@@ -100,6 +100,15 @@ class RegionProviderTest extends TestCase
         $this->assertEquals('009', $this->regionProvider->getContinentCode('AU'));
     }
 
+    public function testGetContinentCodeAsIsoCode(): void
+    {
+        $this->assertEquals('AFR', $this->regionProvider->getContinentCode('DZ', true));
+        $this->assertEquals('AMR', $this->regionProvider->getContinentCode('US', true));
+        $this->assertEquals('ASI', $this->regionProvider->getContinentCode('JP', true));
+        $this->assertEquals('EUR', $this->regionProvider->getContinentCode('FR', true));
+        $this->assertEquals('OCE', $this->regionProvider->getContinentCode('AU', true));
+    }
+
     public function testGetContinentCodeWithInvalidCode(): void
     {
         $this->assertNull($this->regionProvider->getContinentCode('XX'));
@@ -131,7 +140,22 @@ class RegionProviderTest extends TestCase
         $this->assertContains('142', $codes);
         $this->assertContains('150', $codes);
         $this->assertContains('009', $codes);
+        $this->assertContains('010', $codes);
         $this->assertCount(6, $codes); // Now includes Antarctica
+    }
+
+    public function testGetAvailableContinentCodesAsIsoCodes(): void
+    {
+        $codes = $this->regionProvider->getAvailableContinentCodes(true);
+        
+        $this->assertIsArray($codes);
+        $this->assertContains('AFR', $codes);
+        $this->assertContains('AMR', $codes);
+        $this->assertContains('ASI', $codes);
+        $this->assertContains('EUR', $codes);
+        $this->assertContains('OCE', $codes);
+        $this->assertContains('ANT', $codes);
+        $this->assertCount(6, $codes);
     }
 
     public function testGetAvailableSubregionCodes(): void
@@ -264,5 +288,112 @@ class RegionProviderTest extends TestCase
         sort($sortedNames);
         
         $this->assertEquals($sortedNames, $countryNames, 'Country names should be sorted alphabetically');
+    }
+
+    public function testGetCountriesByContinentWithIsoCode(): void
+    {
+        $countries = $this->regionProvider->getCountriesByContinent('EUR');
+        
+        $this->assertIsArray($countries);
+        $this->assertNotEmpty($countries);
+        $this->assertArrayHasKey('FR', $countries);
+        $this->assertArrayHasKey('DE', $countries);
+        $this->assertArrayHasKey('IT', $countries);
+    }
+
+    public function testGetCountriesByContinentWithIsoCodeAndLocale(): void
+    {
+        $countries = $this->regionProvider->getCountriesByContinent('AFR', 'fr');
+        
+        $this->assertIsArray($countries);
+        $this->assertNotEmpty($countries);
+        $this->assertArrayHasKey('DZ', $countries);
+        $this->assertArrayHasKey('EG', $countries);
+        $this->assertArrayHasKey('ZA', $countries);
+    }
+
+    public function testGetIsoContinentCode(): void
+    {
+        $this->assertEquals('AFR', $this->regionProvider->getIsoContinentCode('002'));
+        $this->assertEquals('AMR', $this->regionProvider->getIsoContinentCode('019'));
+        $this->assertEquals('ASI', $this->regionProvider->getIsoContinentCode('142'));
+        $this->assertEquals('EUR', $this->regionProvider->getIsoContinentCode('150'));
+        $this->assertEquals('OCE', $this->regionProvider->getIsoContinentCode('009'));
+        $this->assertNull($this->regionProvider->getIsoContinentCode('999'));
+    }
+
+    public function testGetM49ContinentCode(): void
+    {
+        $this->assertEquals('002', $this->regionProvider->getM49ContinentCode('AFR'));
+        $this->assertEquals('019', $this->regionProvider->getM49ContinentCode('AMR'));
+        $this->assertEquals('142', $this->regionProvider->getM49ContinentCode('ASI'));
+        $this->assertEquals('150', $this->regionProvider->getM49ContinentCode('EUR'));
+        $this->assertEquals('009', $this->regionProvider->getM49ContinentCode('OCE'));
+        $this->assertNull($this->regionProvider->getM49ContinentCode('XXX'));
+    }
+
+    public function testGeographicallyIncorrectCountryCodesAreFiltered(): void
+    {
+        $this->assertFalse($this->regionProvider->hasCountryCode('TF'));
+        
+        $allCountries = $this->regionProvider->getAvailableCountryCodes();
+        $this->assertNotContains('TF', $allCountries);
+    }
+
+    public function testConstructorWithLogger(): void
+    {
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $provider = new RegionProvider('en', $logger);
+        
+        $this->assertInstanceOf(RegionProvider::class, $provider);
+    }
+
+    public function testGetCountriesBySubregionWithIsoCode(): void
+    {
+        $countries = $this->regionProvider->getCountriesBySubregion('WEU');
+        
+        $this->assertIsArray($countries);
+        $this->assertNotEmpty($countries);
+        $this->assertArrayHasKey('FR', $countries);
+        $this->assertArrayHasKey('DE', $countries);
+        $this->assertArrayHasKey('AT', $countries);
+    }
+
+    public function testGetIsoSubregionCode(): void
+    {
+        $this->assertEquals('WEU', $this->regionProvider->getIsoSubregionCode('155'));
+        $this->assertEquals('NAM', $this->regionProvider->getIsoSubregionCode('021'));
+        $this->assertEquals('EAF', $this->regionProvider->getIsoSubregionCode('014'));
+        $this->assertNull($this->regionProvider->getIsoSubregionCode('999'));
+    }
+
+    public function testGetM49SubregionCode(): void
+    {
+        $this->assertEquals('155', $this->regionProvider->getM49SubregionCode('WEU'));
+        $this->assertEquals('021', $this->regionProvider->getM49SubregionCode('NAM'));
+        $this->assertEquals('014', $this->regionProvider->getM49SubregionCode('EAF'));
+        $this->assertNull($this->regionProvider->getM49SubregionCode('XXX'));
+    }
+
+    public function testGetAvailableSubregionCodesAsIsoCodes(): void
+    {
+        $codes = $this->regionProvider->getAvailableSubregionCodes(true);
+        
+        $this->assertIsArray($codes);
+        $this->assertContains('WEU', $codes);
+        $this->assertContains('NAM', $codes);
+        $this->assertContains('EAF', $codes);
+        $this->assertGreaterThan(20, count($codes));
+    }
+
+    public function testAntarcticaSupport(): void
+    {
+        $this->assertTrue($this->regionProvider->hasContinentCode('010'));
+        $this->assertTrue($this->regionProvider->hasContinentCode('ANT'));
+        
+        $antarcticaCountries = $this->regionProvider->getCountriesByContinent('ANT');
+        $this->assertIsArray($antarcticaCountries);
+        $this->assertArrayHasKey('AQ', $antarcticaCountries);
+        $this->assertEquals('Antarctica', $antarcticaCountries['AQ']);
     }
 } 

@@ -5,7 +5,9 @@ A PHP library for filtering localized country lists by UN M49 continent or subre
 ## Features
 
 - **UN M49 Standard Compliance**: Uses official UN M49 codes for continents and subregions
+- **ISO Continent Code Support**: Also supports ISO continent codes (AFR, EUR, AMR, ASI, OCE)
 - **Localization Support**: Integrates with `symfony/intl` for localized country names
+- **Error Handling**: Graceful handling of missing translations with logging
 - **Symfony Bundle**: Easy integration with Symfony applications
 - **CLI Command**: Command-line tool for listing countries by region
 - **JSON-based Mappings**: Maintainable data structure using JSON files
@@ -26,14 +28,26 @@ use Ydee\IntlRegion\RegionProvider;
 
 $provider = new RegionProvider('en');
 
-// Get all countries in Africa
+// Get all countries in Africa (using UN M49 code)
 $africanCountries = $provider->getCountriesByContinent('002');
 
-// Get all countries in Eastern Africa
+// Get all countries in Africa (using ISO code)
+$africanCountries = $provider->getCountriesByContinent('AFR');
+
+// Get all countries in Europe with French names
+$europeanCountries = $provider->getCountriesByContinent('EUR', 'fr');
+
+// Get all countries in Eastern Africa (using UN M49 code)
 $easternAfricanCountries = $provider->getCountriesBySubregion('014');
 
+// Get all countries in Western Europe (using ISO code)
+$westernEuropeanCountries = $provider->getCountriesBySubregion('WEU');
+
+// Get all countries in North America (using ISO code)
+$northAmericanCountries = $provider->getCountriesBySubregion('NAM');
+
 // Get continent information
-$africaInfo = $provider->getContinentInfo('002');
+$africaInfo = $provider->getContinentInfo('AFR');
 ```
 
 ### Symfony Integration
@@ -59,8 +73,11 @@ public function getAfricanCountries(): array
 ### CLI Usage
 
 ```bash
-# List all countries in Africa
+# List all countries in Africa (using UN M49 code)
 php bin/console intl-region:list continent 002
+
+# List all countries in Europe (using ISO code)
+php bin/console intl-region:list continent EUR
 
 # List all countries in Eastern Africa with French names
 php bin/console intl-region:list subregion 014 --locale=fr
@@ -71,6 +88,46 @@ php bin/console intl-region:list continent 002 --format=json
 # Export as CSV
 php bin/console intl-region:list continent 002 --format=csv
 ```
+
+### Error Handling and Logging
+
+The library includes robust error handling for missing translations and obsolete country codes:
+
+```php
+use Psr\Log\LoggerInterface;
+use Ydee\IntlRegion\RegionProvider;
+
+// With custom logger
+$logger = $this->get(LoggerInterface::class);
+$provider = new RegionProvider('en', $logger);
+
+// Missing translations are logged and fallback to English or country code
+$countries = $provider->getCountriesByContinent('EUR', 'fr');
+// If a country has no French translation, it falls back to English
+// If no English translation exists, it uses the country code
+// All issues are logged for monitoring
+```
+
+**Supported Continent Codes:**
+
+| UN M49 Code | ISO Code | Continent |
+|-------------|----------|-----------|
+| 002         | AFR      | Africa    |
+| 019         | AMR      | Americas  |
+| 142         | ASI      | Asia      |
+| 150         | EUR      | Europe    |
+| 009         | OCE      | Oceania   |
+| 010         | ANT      | Antarctica|
+
+**Supported Subregion Codes (Sample):**
+
+| UN M49 Code | ISO Code | Subregion |
+|-------------|----------|-----------|
+| 155         | WEU      | Western Europe |
+| 021         | NAM      | Northern America |
+| 014         | EAF      | Eastern Africa |
+| 029         | CAR      | Caribbean |
+| 053         | ANZ      | Australia and New Zealand |
 
 ## Data Management
 
