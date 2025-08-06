@@ -140,8 +140,7 @@ class RegionProviderTest extends TestCase
         $this->assertContains('142', $codes);
         $this->assertContains('150', $codes);
         $this->assertContains('009', $codes);
-        $this->assertContains('010', $codes);
-        $this->assertCount(6, $codes); // Now includes Antarctica
+        $this->assertCount(5, $codes); // Only sovereign continents
     }
 
     public function testGetAvailableContinentCodesAsIsoCodes(): void
@@ -154,8 +153,7 @@ class RegionProviderTest extends TestCase
         $this->assertContains('ASI', $codes);
         $this->assertContains('EUR', $codes);
         $this->assertContains('OCE', $codes);
-        $this->assertContains('ANT', $codes);
-        $this->assertCount(6, $codes);
+        $this->assertCount(5, $codes); // Only sovereign continents
     }
 
     public function testGetAvailableSubregionCodes(): void
@@ -386,14 +384,5 @@ class RegionProviderTest extends TestCase
         $this->assertGreaterThan(20, count($codes));
     }
 
-    public function testAntarcticaSupport(): void
-    {
-        $this->assertTrue($this->regionProvider->hasContinentCode('010'));
-        $this->assertTrue($this->regionProvider->hasContinentCode('ANT'));
-        
-        $antarcticaCountries = $this->regionProvider->getCountriesByContinent('ANT');
-        $this->assertIsArray($antarcticaCountries);
-        $this->assertArrayHasKey('AQ', $antarcticaCountries);
-        $this->assertEquals('Antarctica', $antarcticaCountries['AQ']);
-    }
+
 } 

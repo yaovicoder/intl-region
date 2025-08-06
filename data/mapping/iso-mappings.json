@@ -1,0 +1,81 @@
+{
+    "metadata": {
+        "source": "UN M49 Standard Country or Area Codes for Statistical Use",
+        "version": "2021",
+        "generated": "2025-01-27",
+        "description": "ISO continent and subregion code mappings to UN M49 codes",
+        "last_updated": "2025-07-09 05:30:00"
+    },
+    "continent_mappings": {
+        "iso_to_m49": {
+            "AFR": "002",
+            "AMR": "019",
+            "ASI": "142",
+            "EUR": "150",
+            "OCE": "009",
+            "ANT": "010"
+        },
+        "m49_to_iso": {
+            "002": "AFR",
+            "019": "AMR",
+            "142": "ASI",
+            "150": "EUR",
+            "009": "OCE",
+            "010": "ANT"
+        }
+    },
+    "subregion_mappings": {
+        "iso_to_m49": {
+            "NAF": "015",
+            "EAF": "014",
+            "MAF": "017",
+            "SAF": "018",
+            "WAF": "011",
+            "SSA": "202",
+            "NAM": "021",
+            "CAM": "013",
+            "SAM": "005",
+            "CAR": "029",
+            "LAC": "419",
+            "EAS": "030",
+            "SAS": "034",
+            "SEA": "035",
+            "CAS": "143",
+            "WAS": "145",
+            "EEU": "151",
+            "NEU": "154",
+            "SEU": "039",
+            "WEU": "155",
+            "ANZ": "053",
+            "MEL": "054",
+            "MIC": "057",
+            "POL": "061"
+        },
+        "m49_to_iso": {
+            "015": "NAF",
+            "014": "EAF",
+            "017": "MAF",
+            "018": "SAF",
+            "011": "WAF",
+            "202": "SSA",
+            "021": "NAM",
+            "013": "CAM",
+            "005": "SAM",
+            "029": "CAR",
+            "419": "LAC",
+            "030": "EAS",
+            "034": "SAS",
+            "035": "SEA",
+            "143": "CAS",
+            "145": "WAS",
+            "151": "EEU",
+            "154": "NEU",
+            "039": "SEU",
+            "155": "WEU",
+            "053": "ANZ",
+            "054": "MEL",
+            "057": "MIC",
+            "061": "POL"
+        }
+    }
+} 

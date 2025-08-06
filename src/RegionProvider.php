@@ -29,114 +29,44 @@ class RegionProvider
     private LoggerInterface $logger;
 
     /**
-     * ISO continent code to UN M49 mapping.
+     * ISO mappings JSON file path.
      */
-    private const ISO_TO_M49_MAPPING = [
-        'AFR' => '002', // Africa
-        'AMR' => '019', // Americas
-        'ASI' => '142', // Asia
-        'EUR' => '150', // Europe
-        'OCE' => '009', // Oceania
-        'ANT' => '010', // Antarctica
-    ];
+    private const ISO_MAPPINGS_FILE = __DIR__ . '/../data/mapping/iso-mappings.json';
 
     /**
-     * UN M49 to ISO continent code mapping.
+     * Cached ISO mappings.
      */
-    private const M49_TO_ISO_MAPPING = [
-        '002' => 'AFR', // Africa
-        '019' => 'AMR', // Americas
-        '142' => 'ASI', // Asia
-        '150' => 'EUR', // Europe
-        '009' => 'OCE', // Oceania
-        '010' => 'ANT', // Antarctica
-    ];
+    private static ?array $isoMappings = null;
 
     /**
-     * ISO subregion code to UN M49 mapping.
+     * Load ISO mappings from JSON file.
+     * 
+     * @return array The ISO mappings
+     * @throws \RuntimeException If the mappings file cannot be loaded
      */
-    private const ISO_SUBREGION_TO_M49_MAPPING = [
-        // Africa
-        'NAF' => '015', // Northern Africa
-        'EAF' => '014', // Eastern Africa
-        'MAF' => '017', // Middle Africa
-        'SAF' => '018', // Southern Africa
-        'WAF' => '011', // Western Africa
-        'SSA' => '202', // Sub-Saharan Africa
-        
-        // Americas
-        'NAM' => '021', // Northern America
-        'CAM' => '013', // Central America
-        'SAM' => '005', // South America
-        'CAR' => '029', // Caribbean
-        'LAC' => '419', // Latin America and the Caribbean
-        
-        // Asia
-        'EAS' => '030', // Eastern Asia
-        'SAS' => '034', // Southern Asia
-        'SEA' => '035', // South-Eastern Asia
-        'CAS' => '143', // Central Asia
-        'WAS' => '145', // Western Asia
-        
-        // Europe
-        'EEU' => '151', // Eastern Europe
-        'NEU' => '154', // Northern Europe
-        'SEU' => '039', // Southern Europe
-        'WEU' => '155', // Western Europe
-        
-        // Oceania
-        'ANZ' => '053', // Australia and New Zealand
-        'MEL' => '054', // Melanesia
-        'MIC' => '057', // Micronesia
-        'POL' => '061', // Polynesia
-    ];
+    private static function loadIsoMappings(): array
+    {
+        if (self::$isoMappings !== null) {
+            return self::$isoMappings;
+        }
 
-    /**
-     * UN M49 to ISO subregion code mapping.
-     */
-    private const M49_TO_ISO_SUBREGION_MAPPING = [
-        // Africa
-        '015' => 'NAF', // Northern Africa
-        '014' => 'EAF', // Eastern Africa
-        '017' => 'MAF', // Middle Africa
-        '018' => 'SAF', // Southern Africa
-        '011' => 'WAF', // Western Africa
-        '202' => 'SSA', // Sub-Saharan Africa
-        
-        // Americas
-        '021' => 'NAM', // Northern America
-        '013' => 'CAM', // Central America
-        '005' => 'SAM', // South America
-        '029' => 'CAR', // Caribbean
-        '419' => 'LAC', // Latin America and the Caribbean
-        
-        // Asia
-        '030' => 'EAS', // Eastern Asia
-        '034' => 'SAS', // Southern Asia
-        '035' => 'SEA', // South-Eastern Asia
-        '143' => 'CAS', // Central Asia
-        '145' => 'WAS', // Western Asia
-        
-        // Europe
-        '151' => 'EEU', // Eastern Europe
-        '154' => 'NEU', // Northern Europe
-        '039' => 'SEU', // Southern Europe
-        '155' => 'WEU', // Western Europe
-        
-        // Oceania
-        '053' => 'ANZ', // Australia and New Zealand
-        '054' => 'MEL', // Melanesia
-        '057' => 'MIC', // Micronesia
-        '061' => 'POL', // Polynesia
-    ];
+        if (!file_exists(self::ISO_MAPPINGS_FILE)) {
+            throw new \RuntimeException('ISO mappings file not found: ' . self::ISO_MAPPINGS_FILE);
+        }
 
-    /**
-     * Geographically incorrect country codes that should be excluded.
-     * These are classified incorrectly in UN M49 data.
-     */
-    private const GEOGRAPHICALLY_INCORRECT_CODES = [
-        'TF', // French Southern Territories - classified as Africa but geographically near Antarctica
-    ];
+        $content = file_get_contents(self::ISO_MAPPINGS_FILE);
+        if ($content === false) {
+            throw new \RuntimeException('Cannot read ISO mappings file: ' . self::ISO_MAPPINGS_FILE);
+        }
+
+        $mappings = json_decode($content, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException('Invalid JSON in ISO mappings file: ' . json_last_error_msg());
+        }
+
+        self::$isoMappings = $mappings;
+        return $mappings;
+    }
     
     /**
      * Constructor.
@@ -205,7 +135,13 @@ class RegionProvider
             return null;
         }
 
-        return $asIsoCode ? (self::M49_TO_ISO_MAPPING[$m49Code] ?? $m49Code) : $m49Code;
+        if ($asIsoCode) {
+            $mappings = self::loadIsoMappings();
+            $m49ToIso = $mappings['continent_mappings']['m49_to_iso'] ?? [];
+            return $m49ToIso[$m49Code] ?? $m49Code;
+        }
+
+        return $m49Code;
     }
 
     /**
@@ -233,8 +169,11 @@ class RegionProvider
             return $m49Codes;
         }
 
+        $mappings = self::loadIsoMappings();
+        $m49ToIso = $mappings['continent_mappings']['m49_to_iso'] ?? [];
+        
         return array_map(
-            fn(string $code) => self::M49_TO_ISO_MAPPING[$code] ?? $code,
+            fn(string $code) => $m49ToIso[$code] ?? $code,
             $m49Codes
         );
     }
@@ -250,10 +189,7 @@ class RegionProvider
     {
         $continentCountries = ContinentMapping::getAvailableCountryCodes();
         $subregionCountries = SubregionMapping::getAvailableCountryCodes();
-        $allCountries = array_unique(array_merge($continentCountries, $subregionCountries));
-        
-        // Filter out geographically incorrect country codes
-        return array_filter($allCountries, fn(string $code) => !in_array($code, self::GEOGRAPHICALLY_INCORRECT_CODES));
+        return array_unique(array_merge($continentCountries, $subregionCountries));
     }
 
     /**
@@ -268,11 +204,6 @@ class RegionProvider
         $result = [];
 
         foreach ($countryCodes as $countryCode) {
-            // Skip geographically incorrect country codes
-            if (in_array($countryCode, self::GEOGRAPHICALLY_INCORRECT_CODES)) {
-                $this->logger->warning('Skipping geographically incorrect country code: {code}', ['code' => $countryCode]);
-                continue;
-            }
 
             try {
                 $countryName = Countries::getName($countryCode, $locale);
@@ -322,7 +253,9 @@ class RegionProvider
      */
     private function normalizeContinentCode(string $continentCode): string
     {
-        return self::ISO_TO_M49_MAPPING[$continentCode] ?? $continentCode;
+        $mappings = self::loadIsoMappings();
+        $isoToM49 = $mappings['continent_mappings']['iso_to_m49'] ?? [];
+        return $isoToM49[$continentCode] ?? $continentCode;
     }
 
     /**
@@ -333,7 +266,9 @@ class RegionProvider
      */
     private function normalizeSubregionCode(string $subregionCode): string
     {
-        return self::ISO_SUBREGION_TO_M49_MAPPING[$subregionCode] ?? $subregionCode;
+        $mappings = self::loadIsoMappings();
+        $isoToM49 = $mappings['subregion_mappings']['iso_to_m49'] ?? [];
+        return $isoToM49[$subregionCode] ?? $subregionCode;
     }
 
     /**
@@ -344,10 +279,6 @@ class RegionProvider
      */
     public function hasCountryCode(string $countryCode): bool
     {
-        if (in_array($countryCode, self::GEOGRAPHICALLY_INCORRECT_CODES)) {
-            return false;
-        }
-        
         return ContinentMapping::hasCountryCode($countryCode) || SubregionMapping::hasCountryCode($countryCode);
     }
 
@@ -424,7 +355,9 @@ class RegionProvider
      */
     public function getIsoContinentCode(string $m49Code): ?string
     {
-        return self::M49_TO_ISO_MAPPING[$m49Code] ?? null;
+        $mappings = self::loadIsoMappings();
+        $m49ToIso = $mappings['continent_mappings']['m49_to_iso'] ?? [];
+        return $m49ToIso[$m49Code] ?? null;
     }
 
     /**
@@ -435,7 +368,9 @@ class RegionProvider
      */
     public function getM49ContinentCode(string $isoCode): ?string
     {
-        return self::ISO_TO_M49_MAPPING[$isoCode] ?? null;
+        $mappings = self::loadIsoMappings();
+        $isoToM49 = $mappings['continent_mappings']['iso_to_m49'] ?? [];
+        return $isoToM49[$isoCode] ?? null;
     }
 
     /**
@@ -446,7 +381,9 @@ class RegionProvider
      */
     public function getIsoSubregionCode(string $m49Code): ?string
     {
-        return self::M49_TO_ISO_SUBREGION_MAPPING[$m49Code] ?? null;
+        $mappings = self::loadIsoMappings();
+        $m49ToIso = $mappings['subregion_mappings']['m49_to_iso'] ?? [];
+        return $m49ToIso[$m49Code] ?? null;
     }
 
     /**
@@ -457,7 +394,9 @@ class RegionProvider
      */
     public function getM49SubregionCode(string $isoCode): ?string
     {
-        return self::ISO_SUBREGION_TO_M49_MAPPING[$isoCode] ?? null;
+        $mappings = self::loadIsoMappings();
+        $isoToM49 = $mappings['subregion_mappings']['iso_to_m49'] ?? [];
+        return $isoToM49[$isoCode] ?? null;
     }
 
     /**
@@ -474,8 +413,11 @@ class RegionProvider
             return $m49Codes;
         }
 
+        $mappings = self::loadIsoMappings();
+        $m49ToIso = $mappings['subregion_mappings']['m49_to_iso'] ?? [];
+        
         return array_map(
-            fn(string $code) => self::M49_TO_ISO_SUBREGION_MAPPING[$code] ?? $code,
+            fn(string $code) => $m49ToIso[$code] ?? $code,
             $m49Codes
         );
     }
