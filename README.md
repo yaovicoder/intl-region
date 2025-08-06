@@ -4,7 +4,7 @@ A PHP library for filtering localized country lists by UN M49 continent or subre
 
 ## Features
 
-- 🌍 **196 Sovereign Countries Only** - Clean data with no territories or dependencies
+- 🌍 **196 Sovereign Countries ** - Clean data with no territories or dependencies
 - 🌐 **Full Internationalization** - Country names in any locale via Symfony Intl
 - 🗺️ **UN M49 Standard** - Official United Nations geographical codes
 - 🔄 **ISO Code Support** - Use ISO codes (EUR, AFR, ASI) or UN M49 codes (150, 002, 142)
@@ -431,3 +431,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
+
+## Data Sources
+
+- [UN M49 Standard](https://unstats.un.org/unsd/methodology/m49/): Official UN geographic codes
+- [Symfony Intl](https://github.com/symfony/intl): Localization and country data

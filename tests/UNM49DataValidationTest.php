@@ -122,7 +122,7 @@ class UNM49DataValidationTest extends TestCase
                 if (in_array($record['iso_alpha2'], $excludedTerritories)) {
                     continue;
                 }
-                
+               
                 $results['un_countries'][$record['iso_alpha2']] = [
                     'continent_code' => $record['region_code'],
                     'subregion_code' => $record['subregion_code'],

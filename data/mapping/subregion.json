@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "source": "all_continents_countries.json - Sovereign countries only",
+        "source": "all_continents_countries.json - Sovereign countries",
         "version": "2024",
         "generated": "2025-01-27",
         "description": "ISO 3166-1 alpha-2 country codes mapped to UN M49 subregion codes (Sovereign countries only)",
