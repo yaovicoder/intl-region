@@ -81,6 +81,18 @@ class RegionProvider
     }
 
     /**
+     * Get all available countries with localized names.
+     *
+     * @param string|null $locale Locale for country names (default: uses configured default)
+     * @return array<string, string> Array of country codes mapped to localized names
+     */
+    public function getAllCountries(?string $locale = null): array
+    {
+        $countryCodes = $this->getAvailableCountryCodes();
+        return $this->getLocalizedCountryNames($countryCodes, $locale ?? $this->defaultLocale);
+    }
+    
+    /**
      * Get all countries for a given continent.
      * 
      * @param string $continentCode UN M49 continent code or ISO continent code
