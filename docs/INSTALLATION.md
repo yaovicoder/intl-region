@@ -413,14 +413,12 @@ use Ydee\IntlRegion\RegionProvider;
 use Psr\Log\LoggerInterface;
 
 // Create custom logger
-class DebugLogger implements LoggerInterface
+class DebugLogger extends \Psr\Log\AbstractLogger
 {
-    public function log($level, $message, array $context = []): void
+    public function log($level, \Stringable|string $message, array $context = []): void
     {
         error_log("[$level] $message: " . json_encode($context));
     }
-    
-    // Implement other methods...
 }
 
 // Use with provider
