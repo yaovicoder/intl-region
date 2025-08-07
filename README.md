@@ -156,7 +156,7 @@ class RegionController extends AbstractController
                 $countries = [];
                 
                 foreach ($countryCodes as $code) {
-                    $countries[$code] = \Locale::getDisplayRegion('-' . $code, 'en');
+                    $countries[$code] = \Locale::getDisplayRegion('-' . $code, $lang);
                 }
             }
         } catch (\InvalidArgumentException $e) {
