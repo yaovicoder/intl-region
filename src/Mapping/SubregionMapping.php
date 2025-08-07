@@ -38,6 +38,7 @@ final class SubregionMapping
 
         self::$mapping = $data['mapping'] ?? [];
         self::$names = $data['names'] ?? [];
+        self::$availableCodes = array_unique(array_values(self::$mapping));
     }
 
     /**
@@ -73,7 +74,6 @@ final class SubregionMapping
     {
         if (self::$availableCodes === null) {
             self::loadData();
-            self::$availableCodes = array_unique(array_values(self::$mapping));
         }
         return self::$availableCodes;
     }
@@ -123,7 +123,6 @@ final class SubregionMapping
     {
         if (self::$availableCodes === null) {
             self::loadData();
-            self::$availableCodes = array_unique(array_values(self::$mapping));
         }
         return in_array($subregionCode, self::$availableCodes, true);
     }

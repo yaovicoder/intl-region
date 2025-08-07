@@ -59,7 +59,7 @@ class ContinentMappingTest extends TestCase
         $this->assertContains('142', $codes);
         $this->assertContains('150', $codes);
         $this->assertContains('009', $codes);
-        $this->assertCount(5, $codes);
+        $this->assertCount(5, $codes); // Only sovereign continents
     }
 
     public function testGetAvailableCountryCodes(): void
@@ -95,7 +95,7 @@ class ContinentMappingTest extends TestCase
     public function testContinentMappingConsistency(): void
     {
         // Test that all countries in the mapping have valid continent codes
-        $validContinentCodes = ['002', '019', '142', '150', '009'];
+        $validContinentCodes = ['002', '019', '142', '150', '009']; // Only sovereign continents
         
         foreach (ContinentMapping::getAvailableCountryCodes() as $countryCode) {
             $continentCode = ContinentMapping::getContinentCode($countryCode);

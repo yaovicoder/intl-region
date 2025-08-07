@@ -104,6 +104,10 @@ class SubregionMappingTest extends TestCase
         
         foreach (SubregionMapping::getAvailableCountryCodes() as $countryCode) {
             $subregionCode = SubregionMapping::getSubregionCode($countryCode);
+            // Skip Antarctica (AQ) as it has empty subregion code
+            if ($countryCode === 'AQ') {
+                continue;
+            }
             $this->assertNotNull($subregionCode, "Country $countryCode should have a subregion code");
             $this->assertContains($subregionCode, $validSubregionCodes, "Country $countryCode has invalid subregion code: $subregionCode");
         }

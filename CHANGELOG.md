@@ -59,15 +59,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **PSR-12** coding standards compliance
 - **PHPDoc** documentation for all public methods
 - **Type hints** and strict typing throughout
-- **Error handling** with meaningful exception messages
+- **Error handling** with meaningful exception messages and logging
 - **Performance optimized** static mappings
 - **Extensible architecture** for future enhancements
+- **ISO continent code support** alongside UN M49 codes
+- **Graceful fallback** for missing translations
+- **Obsolete country code filtering** to prevent errors
 
 ### Dependencies
 - `symfony/intl` ^6.0|^7.0 - For country name localization
 - `symfony/console` ^6.0|^7.0 - For CLI command functionality
 - `symfony/dependency-injection` ^6.0|^7.0 - For service container integration
 - `symfony/config` ^6.0|^7.0 - For bundle configuration
+- `psr/log` ^3.0 - For logging support
 - `phpunit/phpunit` ^10.0 - For testing framework
 
 ### Documentation
