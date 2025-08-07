@@ -388,7 +388,10 @@ The library provides graceful error handling with logging:
 use Psr\Log\LoggerInterface;
 
 // Create provider with custom logger
-$logger = new CustomLogger();
+use Psr\Log\NullLogger;
+
+// Create provider with custom logger
+$logger = new NullLogger();
 $provider = new RegionProvider('en', $logger);
 
 // Missing translations are logged and fallback to English or country code
