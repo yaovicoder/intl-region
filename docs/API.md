@@ -620,16 +620,15 @@ The library provides graceful error handling:
 
 ```php
 use Ydee\IntlRegion\RegionProvider;
+use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 
-class CustomLogger implements LoggerInterface
+class CustomLogger extends AbstractLogger
 {
-    public function log($level, $message, array $context = []): void
+    public function log($level, \Stringable|string $message, array $context = []): void
     {
         error_log("[$level] $message: " . json_encode($context));
     }
-    
-    // Implement other methods...
 }
 
 // Create provider with logger
