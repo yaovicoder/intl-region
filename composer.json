@@ -40,6 +40,12 @@
     "extra": {
         "branch-alias": {
             "dev-develop": "1.0-dev"
+        },
+        "symfony": {
+            "allow-contrib": false,
+            "bundles": {
+                "Ydee\\IntlRegion\\Bundle\\IntlRegionBundle": ["all"]
+            }
         }
     },
     "version": "1.0.0"
