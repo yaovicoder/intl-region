@@ -323,7 +323,7 @@ class RegionProvider
         return [
             'code' => $continentCode,
             'name' => ContinentMapping::getName($m49Code) ?? $continentCode,
-            'countries' => $this->getCountriesByContinent($continentCode, $locale ?? $this->defaultLocale),
+            'countries' => $this->getCountriesByContinent($m49Code, $locale ?? $this->defaultLocale),
         ];
     }
 
